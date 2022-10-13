@@ -1,7 +1,7 @@
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote;
-use syn::{Block, DeriveInput, Error, punctuated};
+use syn::{Block, DeriveInput, Error};
 
 extern crate proc_macro;
 
@@ -30,19 +30,23 @@ pub fn resolve_constructor(_: TokenStream, input: TokenStream) -> TokenStream {
 
     let resolve_generated = generate_resolve_generated(&function.sig);
 
-    quote!{
+    quote! {
         #function
 
         #resolve_generated
-    }.into()
+    }
+    .into()
 }
-
 
 fn generate_resolve_generated(sig: &syn::Signature) -> proc_macro2::TokenStream {
     let fn_name = sig.ident.clone();
-    let calls: Vec<proc_macro2::TokenStream> = sig.inputs.iter().map(|_| quote!(service_provider.unwrap())).collect();
+    let calls: Vec<proc_macro2::TokenStream> = sig
+        .inputs
+        .iter()
+        .map(|_| quote!(service_provider.unwrap()))
+        .collect();
 
-    quote!{
+    quote! {
         #[allow(unused_variables)]
         pub fn resolve_generated(service_provider: &rocket_dependency_injection::ServiceProvider) -> Self {
             Self::#fn_name(#(#calls),*)
@@ -70,9 +74,15 @@ fn validate_sig(sig: &syn::Signature) -> syn::Result<()> {
     validate_output(&sig.output)?;
     validate_arguments(&sig.inputs)?;
     if sig.asyncness.is_some() {
-        Err(Error::new(Span::call_site(), "resolve_constructor cannot be set on an async function"))
+        Err(Error::new(
+            Span::call_site(),
+            "resolve_constructor cannot be set on an async function",
+        ))
     } else if sig.constness.is_some() {
-        Err(Error::new(Span::call_site(), "resolve_constructor cannot be set on a const function"))
+        Err(Error::new(
+            Span::call_site(),
+            "resolve_constructor cannot be set on a const function",
+        ))
     } else {
         Ok(())
     }
