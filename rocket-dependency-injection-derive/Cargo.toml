@@ -1,5 +1,7 @@
 [package]
 name = "rocket-dependency-injection-derive"
+authors = ["asafr1993@gmail.com"]
+repository = "https://github.com/Asafrose/rocket-dependency-injection"
 version = "0.1.0"
 edition = "2021"
 
