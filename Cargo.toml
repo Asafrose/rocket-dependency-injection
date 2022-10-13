@@ -1,0 +1,21 @@
+[package]
+name = "rocket-dependency-injection"
+authors = ["asafr1993@gmail.com"]
+repository = ""
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[workspace]
+members = ["rocket-dependency-injection-derive"]
+
+[features]
+default = ['derive']
+derive = ['rocket-dependency-injection-derive']
+
+[dependencies]
+async-trait = "^0.1.57"
+rocket-dependency-injection-derive = { version = "0.1.0", path = "./rocket-dependency-injection-derive", optional = true }
+rocket = "^0.5.0-rc.2"
+tokio = "^1.21.2"
